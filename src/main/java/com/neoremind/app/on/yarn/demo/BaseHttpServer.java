@@ -9,14 +9,14 @@ import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.PrintStream;
 import java.net.BindException;
+
 
 /**
  * BaseHttpServer
@@ -78,11 +78,10 @@ public abstract class BaseHttpServer implements Closeable {
     public static class StackServlet extends HttpServlet {
         @Override
         public void doGet(HttpServletRequest request, HttpServletResponse response)
-                throws ServletException, IOException {
-            try (PrintWriter out = new PrintWriter(
+                throws IOException {
+            try (PrintStream out = new PrintStream(
                     HtmlQuoting.quoteOutputStream(response.getOutputStream()))) {
                 ReflectionUtils.printThreadInfo(out, "");
-                out.close();
             }
             ReflectionUtils.logThreadInfo(LOG, "jsp requested", 1);
         }
